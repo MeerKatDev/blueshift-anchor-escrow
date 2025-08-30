@@ -71,13 +71,13 @@ pub fn handler(ctx: Context<Make>, seed: u64, receive: u64, amount: u64) -> Resu
 
 impl<'info> Make<'info> {
     /// # Create the Escrow
-    fn populate_escrow(&mut self, seed: u64, receive: u64, bump: u8) -> Result<()> {
+    fn populate_escrow(&mut self, seed: u64, amount: u64, bump: u8) -> Result<()> {
         self.escrow.set_inner(Escrow {
             seed,
             maker: self.maker.key(),
             mint_a: self.mint_a.key(),
             mint_b: self.mint_b.key(),
-            receive,
+            receive: amount,
             bump,
         });
  
@@ -85,7 +85,7 @@ impl<'info> Make<'info> {
     }
  
     /// # Deposit the tokens
-    fn deposit_tokens(&mut self, amount: u64) -> Result<()> {
+    fn deposit_tokens(&self, amount: u64) -> Result<()> {
         transfer_checked(
             CpiContext::new(
                 self.token_program.to_account_info(),
